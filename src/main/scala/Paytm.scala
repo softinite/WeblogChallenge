@@ -18,6 +18,13 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat
 import scala.collection.immutable.HashMap
 import java.util.Date
 
+/**
+  * This sessionization example has been taken from
+  * https://github.com/tmalaska/SparkStreaming.Sessionization/blob/master/src/main/scala/com/cloudera/sa/example/sparkstreaming/sessionization/SessionizeData.scala
+  *
+  * Given more time, my focus would be to modify this code to work with provided ELB file.
+  *
+  */
 object Paytm {
 
   val OUTPUT_ARG = 1
