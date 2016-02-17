@@ -43,7 +43,21 @@ object Weblog {
     //Determining and printing unique paths per session
     usersSessions.map(userSessions => userSessions._2).map(sessions => uniquePaths(sessions)).reduce( _ ++ _ ).foreach( path => println(path))
 
+    //Ordering users by max session lengths
+    val usersMSessions = usersSessions.map(userSessions => (userSessions._1, maxSessionLenght(userSessions._2))).sortBy(_._2).cache()
+
+    val maxSessions = usersMSessions.map(ums => ums._2).cache()
+    val averageMax =  maxSessions.sum() / maxSessions.count()
+
+    val moreActiveThanAverageUsers = usersMSessions.filter(ums => ums._2 > averageMax)
+
+    moreActiveThanAverageUsers.foreach(ums => println(ums._1 + " " + ums._2))
+
     println("Done.")
+  }
+
+  def maxSessionLenght(sessions: List[WebLogSession]) : Long = {
+    sessions.map(session => session.duration()).sorted.last.toLong
   }
 
   def uniquePaths(sessions: List[WebLogSession]): Set[String] = {
