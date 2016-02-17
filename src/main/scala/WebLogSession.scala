@@ -7,6 +7,10 @@ import scala.collection.mutable.ListBuffer
   * Created by Softinite on 2016-02-16.
   */
 case class WebLogSession(requests : ListBuffer[(DateTime, String)]) {
+  def uniquePaths(): Set[String] = {
+    requests.map(req => req._2).toSet
+  }
+
   def duration(): Double = {
     if (requests.size <= 1) {
       return 0

@@ -33,17 +33,21 @@ object Weblog {
     val usersRequests:RDD[(String, List[(String, String)])] = requests.reduceByKey((l1, l2) => l1 ++ l2)
 
     //Group users' requests into sessions
-    val usersSessions: RDD[(String, List[WebLogSession])] = usersRequests.map(userRequests => groupRequestsIntoSessions(userRequests))
+    val usersSessions: RDD[(String, List[WebLogSession])] = usersRequests.map(userRequests => groupRequestsIntoSessions(userRequests)).cache()
 
     //Getting a list of averages across users
-    val averages = usersSessions.map( userSession => average(userSession._2)).filter( _ > 0)
+    val averages = usersSessions.map( userSession => average(userSession._2)).filter( _ > 0).cache()
 
     println("Average session length is " + (averages.sum()/averages.count()))
 
-    //Determining unique paths per session
-
+    //Determining and printing unique paths per session
+    usersSessions.map(userSessions => userSessions._2).map(sessions => uniquePaths(sessions)).reduce( _ ++ _ ).foreach( path => println(path))
 
     println("Done.")
+  }
+
+  def uniquePaths(sessions: List[WebLogSession]): Set[String] = {
+    sessions.map(session => session.uniquePaths()).reduce(_ ++ _)
   }
 
   def average(sessions: List[WebLogSession]): Double = {
